@@ -1,7 +1,7 @@
 package database
 
 import (
-	"API/internal/models"
+	"API/config"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -11,16 +11,18 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	dsn := "user:password@tcp(localhost:3306)/ecommerce?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := config.GetMySQLDSN()
+
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to MySQL:", err)
 	}
 
+	// Lưu kết nối vào biến toàn cục
 	DB = db
 
-	// Auto-migrate tables
-	err = db.AutoMigrate(&models.Product{})
+	// Auto-migrate nếu cần
+	err = DB.AutoMigrate( /* các model cần thiết */ )
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}

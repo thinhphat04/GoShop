@@ -6,12 +6,12 @@ import (
 )
 
 type User struct {
-	ID        uint   `gorm:"primaryKey;autoIncrement"`
-	Username  string `gorm:"type:varchar(100);not null;unique"`
-	Email     string `gorm:"type:varchar(100);not null;unique"`
-	Password  string `gorm:"type:varchar(255);not null"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	Username  string    `gorm:"type:varchar(100);not null;unique" json:"username"`
+	Email     string    `gorm:"type:varchar(100);not null;unique" json:"email"`
+	Password  string    `gorm:"type:varchar(255);not null" json:"-"` // Không trả về mật khẩu
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // HashPassword hashes the password before saving
