@@ -32,6 +32,11 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
+	// Nếu không có `role` trong request, đặt mặc định là "user"
+	if user.Role == "" {
+		user.Role = "user"
+	}
+
 	err = h.userService.CreateUser(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})

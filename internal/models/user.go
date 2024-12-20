@@ -9,7 +9,8 @@ type User struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
 	Username  string    `gorm:"type:varchar(100);not null;unique" json:"username"`
 	Email     string    `gorm:"type:varchar(100);not null;unique" json:"email"`
-	Password  string    `gorm:"type:varchar(255);not null" json:"-"` // Không trả về mật khẩu
+	Password  string    `gorm:"type:varchar(255);not null" json:"-"`
+	Role      string    `gorm:"type:varchar(50);default:'user'" json:"role"` // Thêm role
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
