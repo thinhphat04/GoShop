@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-api
+    ports:
+      - "8080:8080" # Map cổng 8080 trên host vào container
+    environment:
+      - MYSQL_DSN=user:password@tcp(mysql:3306)/ecommerce?charset=utf8mb4&parseTime=True&loc=Local
+    depends_on:
+      - mysql # Đảm bảo MySQL chạy trước khi API chạy
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306" # Map cổng MySQL
+
+volumes:
+  mysql_data:
