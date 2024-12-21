@@ -16,7 +16,17 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 	return &UserHandler{userService: userService}
 }
 
-// CreateUser handles creating a new user
+// CreateUser godoc
+// @Summary      Create a new user
+// @Description  Add a new user to the database with role, hashed password, and validation
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        user  body      models.User  true  "User details"
+// @Success      201   {object}  models.User
+// @Failure      400   {object}  map[string]interface{}  "Invalid request payload"
+// @Failure      500   {object}  map[string]interface{}  "Failed to process request"
+// @Router       /users [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var user models.User
 
@@ -46,7 +56,15 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": user})
 }
 
-// GetUsers handles retrieving all users
+// GetUsers godoc
+// @Summary      Retrieve all users
+// @Description  Get a list of all registered users from the database
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Success      200   {array}   models.User
+// @Failure      500   {object}  map[string]interface{}  "Failed to retrieve users"
+// @Router       /users [get]
 func (h *UserHandler) GetUsers(c *gin.Context) {
 	users, err := h.userService.GetUsers()
 	if err != nil {

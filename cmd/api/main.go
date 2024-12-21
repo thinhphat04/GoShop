@@ -1,20 +1,26 @@
 package main
 
 import (
+	"API/config"
+	"API/routes"
 	"log"
-
-	"API/config" // Đường dẫn gói config của bạn
-	"API/routes" // Import file routes bạn vừa định nghĩa
 )
 
+// @title           API Documentation
+// @version         1.0
+// @description     API for managing users, products, orders, and carts.
+// @host            localhost:8080
+// @BasePath        /api
 func main() {
-	// Load cấu hình từ file .env
+	// Load environment variables
 	config.Load()
 
-	// Khởi tạo router Gin
+	// Set up routes
 	router := routes.SetupRoutes()
 
-	// Chạy server
+	// Start the server
 	log.Println("Server is running on port 8080...")
-	router.Run(":8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("Failed to start the server: %v", err)
+	}
 }

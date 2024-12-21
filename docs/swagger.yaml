@@ -1,5 +1,20 @@
 basePath: /api
 definitions:
+  models.Product:
+    properties:
+      category:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    type: object
   models.User:
     properties:
       created_at:
@@ -18,23 +33,91 @@ definitions:
     type: object
 host: localhost:8080
 info:
-  contact:
-    email: support@example.com
-    name: Support Team
-    url: http://www.swagger.io/support
+  contact: {}
   description: API for managing users, products, orders, and carts.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
   title: API Documentation
   version: "1.0"
 paths:
-  /users:
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Get all products from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Product'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Retrieve a list of products
+      tags:
+      - Products
     post:
       consumes:
       - application/json
-      description: Create a new user with the provided details
+      description: Add a new product to the database
+      parameters:
+      - description: Product details
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new product
+      tags:
+      - Products
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all registered users from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "500":
+          description: Failed to retrieve users
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Retrieve all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Add a new user to the database with role, hashed password, and
+        validation
       parameters:
       - description: User details
         in: body
@@ -50,12 +133,12 @@ paths:
           schema:
             $ref: '#/definitions/models.User'
         "400":
-          description: Bad Request
+          description: Invalid request payload
           schema:
             additionalProperties: true
             type: object
         "500":
-          description: Internal Server Error
+          description: Failed to process request
           schema:
             additionalProperties: true
             type: object
