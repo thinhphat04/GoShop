@@ -6,13 +6,14 @@ import (
 )
 
 type User struct {
-	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	Username  string    `gorm:"type:varchar(100);not null;unique" json:"username"`
-	Email     string    `gorm:"type:varchar(100);not null;unique" json:"email"`
-	Password  string    `gorm:"type:varchar(255);not null" json:"-"`
-	Role      string    `gorm:"type:varchar(50);default:'user'" json:"role"` // Thêm role
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        uint    `gorm:"primaryKey"`
+	Username  string  `gorm:"type:varchar(100);not null;unique"`
+	Email     string  `gorm:"type:varchar(100);not null;unique"`
+	Password  string  `gorm:"type:varchar(255);not null"`
+	Role      string  `gorm:"type:varchar(50);default:'user'"`
+	Orders    []Order `gorm:"foreignKey:UserID"` // Quan hệ One-to-Many
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // HashPassword hashes the password before saving

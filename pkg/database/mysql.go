@@ -2,6 +2,7 @@ package database
 
 import (
 	"API/config"
+	"API/internal/models"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -22,7 +23,13 @@ func ConnectDatabase() {
 	DB = db
 
 	// Auto-migrate nếu cần
-	err = DB.AutoMigrate( /* các model cần thiết */ )
+	err = DB.AutoMigrate(
+		&models.User{},
+		&models.Order{},
+		&models.Product{},
+		&models.Cart{},
+		&models.Coupon{},
+	)
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
