@@ -17,6 +17,18 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 }
 
 // CreateUser handles creating a new user
+
+// CreateUser godoc
+// @Summary      Create a new user
+// @Description  Create a new user with the provided details
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        user  body      models.User  true  "User details"
+// @Success      201   {object}  models.User
+// @Failure      400   {object}  map[string]interface{}
+// @Failure      500   {object}  map[string]interface{}
+// @Router       /users [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var user models.User
 
@@ -33,7 +45,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	}
 
 	// Nếu không có `role` trong request, đặt mặc định là "user"
-	if user.Role == "" {
+	if user.Role == "admin" {
 		user.Role = "user"
 	}
 
