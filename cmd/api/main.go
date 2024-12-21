@@ -2,6 +2,7 @@ package main
 
 import (
 	"API/config"
+	"API/pkg/redis"
 	"API/routes"
 	"log"
 )
@@ -12,6 +13,8 @@ import (
 // @host            localhost:8080
 // @BasePath        /api
 func main() {
+	// Connect to Redis
+	redis.ConnectRedis()
 	// Load environment variables
 	config.Load()
 
