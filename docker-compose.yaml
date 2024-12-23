@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: go-api
+    container_name: goshop-api
     ports:
       - "8080:8080" # Map cổng 8080 trên host vào container
     environment:

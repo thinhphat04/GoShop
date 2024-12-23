@@ -1,7 +1,12 @@
 package handlers
 
 import (
+	"API/pkg/redis"
+	"context"
+	"encoding/json"
+	"log"
 	"net/http"
+	"time"
 
 	"API/internal/models"
 	"API/internal/services"
@@ -26,13 +31,40 @@ func NewProductHandler(productService *services.ProductService) *ProductHandler 
 // @Failure      500  {object}  map[string]interface{}
 // @Router       /products [get]
 func (h *ProductHandler) GetProducts(c *gin.Context) {
+	ctx := context.Background()
+	cacheKey := "products_cache"
+
+	// Lấy dữ liệu từ Redis
+	start := time.Now()
+	cachedProducts, err := redis.Client.Get(ctx, cacheKey).Result()
+	if err == nil {
+		// Deserialize dữ liệu Redis
+		var products []models.Product
+		json.Unmarshal([]byte(cachedProducts), &products)
+
+		// Trả về dữ liệu từ Redis
+		duration := time.Since(start)
+		log.Printf("Redis cache hit, duration: %v\n", duration)
+		c.JSON(http.StatusOK, gin.H{"data": products, "source": "cache"})
+		return
+	}
+
+	// Nếu Redis cache miss, lấy từ cơ sở dữ liệu
+	start = time.Now()
 	products, err := h.productService.GetProducts()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get products"})
 		return
 	}
 
-	c.JSON(http.StatusOK, products)
+	// Lưu dữ liệu vào Redis
+	productJSON, _ := json.Marshal(products)
+	redis.Client.Set(ctx, cacheKey, productJSON, 10*time.Minute)
+
+	// Trả về dữ liệu từ database
+	duration := time.Since(start)
+	log.Printf("Database query duration: %v\n", duration)
+	c.JSON(http.StatusOK, gin.H{"data": products, "source": "database"})
 }
 
 // CreateProduct godoc
